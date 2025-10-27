@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPO Central</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .gradient-green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .gradient-orange { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); }
+        .status-upcoming { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        .status-open { background: linear-gradient(90deg, #10b981, #059669); }
+        .status-closed { background: linear-gradient(90deg, #6b7280, #4b5563); }
+        .sector-technology { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+        .sector-healthcare { background: linear-gradient(135deg, #10b981, #047857); }
+        .sector-finance { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .sector-energy { background: linear-gradient(135deg, #84cc16, #65a30d); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="login-page" class="section min-h-screen gradient-bg flex items-center justify-center">
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-4">📈</div>
+                <h1 class="text-3xl font-bold text-white mb-2">IPO Central</h1>
+                <p class="text-white opacity-80">Your gateway to IPO investments</p>
+            </div>
+            
+            <form id="login-form" class="space-y-6">
+                <input type="email" placeholder="Email" class="w-full px-4 py-3 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50">
+                <input type="password" placeholder="Password" class="w-full px-4 py-3 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50">
+                <button type="submit" class="w-full gradient-blue text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all">Sign In</button>
+            </form>
+            
+            <div class="text-center mt-6">
+                <button onclick="demoLogin()" class="text-white opacity-80 hover:opacity-100 underline">🚀 Try Demo</button>
+            </div>
+        </div>
+    </div>
+
+    <nav id="main-nav" class="gradient-bg shadow-lg hidden">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-white text-2xl font-bold">📈 IPO Central</h1>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showSection('dashboard')" class="text-white hover:text-gray-200 px-3 py-2 rounded-md font-medium">Dashboard</button>
+                    <button onclick="showSection('portfolio')" class="text-white hover:text-gray-200 px-3 py-2 rounded-md font-medium">Portfolio</button>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-white">👤 John Doe</div>
+                        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="ipo-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl m-4">
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="section">
+        <div class="gradient-bg text-white py-16">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <h2 class="text-4xl font-bold mb-4">Track IPOs & Build Your Portfolio</h2>
+                <p class="text-xl mb-8 opacity-90">Stay updated with the latest IPO launches</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                    <div class="gradient-blue rounded-2xl p-6">
+                        <div class="text-3xl font-bold mb-2">24</div>
+                        <div class="text-sm opacity-90">Active IPOs</div>
+                    </div>
+                    <div class="gradient-green rounded-2xl p-6">
+                        <div class="text-3xl font-bold mb-2">$12.4B</div>
+                        <div class="text-sm opacity-90">Total Value</div>
+                    </div>
+                    <div class="bg-purple-600 rounded-2xl p-6">
+                        <div class="text-3xl font-bold mb-2">+18.5%</div>
+                        <div class="text-sm opacity-90">Avg Return</div>
+                    </div>
+                    <div class="gradient-orange rounded-2xl p-6">
+                        <div class="text-3xl font-bold mb-2">156</div>
+                        <div class="text-sm opacity-90">Investors</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div id="ipo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    </div>
+
+    <div id="portfolio" class="section hidden">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-lg shadow-md p-8">
+                <h2 class="text-3xl font-bold mb-6">My Portfolio</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="gradient-green rounded-lg p-6 text-white">
+                        <h3 class="text-lg font-medium">Total Value</h3>
+                        <p class="text-3xl font-bold">$45,230</p>
+                    </div>
+                    <div class="gradient-blue rounded-lg p-6 text-white">
+                        <h3 class="text-lg font-medium">Total Shares</h3>
+                        <p class="text-3xl font-bold">1,250</p>
+                    </div>
+                    <div class="bg-purple-600 rounded-lg p-6 text-white">
+                        <h3 class="text-lg font-medium">Avg Return</h3>
+                        <p class="text-3xl font-bold">+18.7%</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold mb-4">Add IPO to Portfolio</h3>
+                    <form id="add-portfolio-form" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <select id="ipo-select" class="border border-gray-300 rounded-md px-3 py-2">
+                            <option value="">Select IPO</option>
+                        </select>
+                        <input type="number" id="shares-input" placeholder="Shares" class="border border-gray-300 rounded-md px-3 py-2">
+                        <input type="number" id="target-price" placeholder="Price ($)" step="0.01" class="border border-gray-300 rounded-md px-3 py-2">
+                        <button type="submit" class="gradient-green text-white px-6 py-2 rounded-md font-medium">Add</button>
+                    </form>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Company</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Shares</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Avg Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Current</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Return</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holdings-table" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ipoData = [
+            {
+                id: 1, company: "TechCorp Inc.", symbol: "TECH", sector: "technology",
+                price_range: "$20-25", current_price: 28.50, status: "open",
+                launch_date: "2024-01-15", description: "Leading AI and cloud computing solutions",
+                market_cap: "$2.1B", performance: "+14.0%",
+                ceo: "Sarah Johnson", founded: "2018", employees: "2,500+",
+                revenue: "$450M", growth: "+85% YoY"
+            },
+            {
+                id: 2, company: "HealthTech Solutions", symbol: "HLTH", sector: "healthcare",
+                price_range: "$15-18", current_price: 16.75, status: "upcoming",
+                launch_date: "2024-02-01", description: "Digital health platform and telemedicine",
+                market_cap: "$850M", performance: "N/A",
+                ceo: "Dr. Michael Chen", founded: "2019", employees: "850+",
+                revenue: "$125M", growth: "+120% YoY"
+            },
+            {
+                id: 3, company: "GreenEnergy Corp", symbol: "GREEN", sector: "energy",
+                price_range: "$30-35", current_price: 42.20, status: "closed",
+                launch_date: "2023-12-10", description: "Renewable energy and battery technology",
+                market_cap: "$3.2B", performance: "+20.6%",
+                ceo: "Elena Rodriguez", founded: "2016", employees: "4,200+",
+                revenue: "$680M", growth: "+65% YoY"
+            }
+        ];
+
+        let portfolioData = [
+            { ipo_id: 1, company: "TechCorp Inc.", shares: 100, avg_price: 22.50, current_price: 28.50, symbol: "TECH" },
+            { ipo_id: 3, company: "GreenEnergy Corp", shares: 50, avg_price: 32.00, current_price: 42.20, symbol: "GREEN" }
+        ];
+
+        function init() {
+            renderIPOs();
+            populateIPOSelect();
+            renderPortfolio();
+            showSection('login-page');
+            
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+        }
+
+        function handleLogin() {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('main-nav').classList.remove('hidden');
+            showSection('dashboard');
+        }
+
+        function demoLogin() {
+            handleLogin();
+        }
+
+        function logout() {
+            document.getElementById('main-nav').classList.add('hidden');
+            showSection('login-page');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(section).classList.remove('hidden');
+        }
+
+        function renderIPOs() {
+            const grid = document.getElementById('ipo-grid');
+            const sectorEmojis = { technology: '💻', healthcare: '🏥', finance: '💰', energy: '⚡' };
+            
+            grid.innerHTML = ipoData.map(ipo => `
+                <div class="bg-white rounded-2xl shadow-lg card-hover overflow-hidden">
+                    <div class="sector-${ipo.sector} h-2 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 sector-${ipo.sector} rounded-xl flex items-center justify-center text-white text-xl mr-4">
+                                ${sectorEmojis[ipo.sector] || '🏢'}
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">${ipo.company}</h3>
+                                <p class="text-gray-600">${ipo.symbol}</p>
+                            </div>
+                            <span class="status-${ipo.status} text-white px-3 py-1 rounded-full text-sm font-medium ml-auto">${ipo.status.toUpperCase()}</span>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-4">${ipo.description}</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-500">Price Range</p>
+                                <p class="font-bold">${ipo.price_range}</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-500">Performance</p>
+                                <p class="font-bold ${ipo.performance.includes('+') ? 'text-green-600' : 'text-gray-600'}">${ipo.performance}</p>
+                            </div>
+                        </div>
+                        
+                        <button onclick="viewDetails(${ipo.id})" class="w-full gradient-blue text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
+                            📊 View Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewDetails(id) {
+            const ipo = ipoData.find(i => i.id === id);
+            const modal = document.getElementById('ipo-modal');
+            const content = document.getElementById('modal-content');
+            
+            content.innerHTML = `
+                <div class="gradient-bg text-white p-8 relative">
+                    <button onclick="closeModal()" class="absolute top-4 right-4 text-white text-2xl">✕</button>
+                    <h2 class="text-3xl font-bold mb-4">${ipo.company}</h2>
+                    <p class="text-lg opacity-90 mb-4">${ipo.description}</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-sm opacity-80">Price Range</div>
+                            <div class="text-xl font-bold">${ipo.price_range}</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-sm opacity-80">Market Cap</div>
+                            <div class="text-xl font-bold">${ipo.market_cap}</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-sm opacity-80">Revenue</div>
+                            <div class="text-xl font-bold">${ipo.revenue}</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-sm opacity-80">Growth</div>
+                            <div class="text-xl font-bold">${ipo.growth}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">Company Info</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between py-2 border-b">
+                                    <span class="text-gray-600">CEO</span>
+                                    <span class="font-medium">${ipo.ceo}</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b">
+                                    <span class="text-gray-600">Founded</span>
+                                    <span class="font-medium">${ipo.founded}</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b">
+                                    <span class="text-gray-600">Employees</span>
+                                    <span class="font-medium">${ipo.employees}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">Financial Highlights</h3>
+                            <div class="space-y-4">
+                                <div class="bg-blue-50 rounded-lg p-4">
+                                    <div class="text-sm text-gray-600">2023 Revenue</div>
+                                    <div class="text-2xl font-bold text-blue-600">${ipo.revenue}</div>
+                                </div>
+                                <div class="bg-green-50 rounded-lg p-4">
+                                    <div class="text-sm text-gray-600">Growth Rate</div>
+                                    <div class="text-2xl font-bold text-green-600">${ipo.growth}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex gap-4">
+                        <button onclick="addToPortfolioModal(${ipo.id})" class="gradient-green text-white px-6 py-3 rounded-xl font-semibold">
+                            💼 Add to Portfolio
+                        </button>
+                        <button onclick="closeModal()" class="bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('ipo-modal').classList.add('hidden');
+        }
+
+        function addToPortfolioModal(id) {
+            closeModal();
+            showSection('portfolio');
+            document.getElementById('ipo-select').value = id;
+        }
+
+        function populateIPOSelect() {
+            const select = document.getElementById('ipo-select');
+            select.innerHTML = '<option value="">Select IPO</option>' + 
+                ipoData.map(ipo => `<option value="${ipo.id}">${ipo.company} (${ipo.symbol})</option>`).join('');
+        }
+
+        document.getElementById('add-portfolio-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const ipoId = parseInt(document.getElementById('ipo-select').value);
+            const shares = parseInt(document.getElementById('shares-input').value);
+            const targetPrice = parseFloat(document.getElementById('target-price').value);
+            
+            if (!ipoId || !shares || !targetPrice) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const ipo = ipoData.find(i => i.id === ipoId);
+            portfolioData.push({
+                ipo_id: ipoId,
+                company: ipo.company,
+                symbol: ipo.symbol,
+                shares: shares,
+                avg_price: targetPrice,
+                current_price: ipo.current_price || targetPrice
+            });
+            
+            renderPortfolio();
+            this.reset();
+            alert(`Added ${shares} shares of ${ipo.company} to portfolio!`);
+        });
+
+        function renderPortfolio() {
+            const tbody = document.getElementById('holdings-table');
+            tbody.innerHTML = portfolioData.map(holding => {
+                const returnPercent = ((holding.current_price - holding.avg_price) / holding.avg_price * 100).toFixed(1);
+                const returnClass = returnPercent >= 0 ? 'text-green-600' : 'text-red-600';
+                const totalValue = (holding.shares * holding.current_price).toFixed(2);
+                
+                return `
+                    <tr>
+                        <td class="px-6 py-4">
+                            <div class="font-medium">${holding.company}</div>
+                            <div class="text-sm text-gray-500">${holding.symbol}</div>
+                        </td>
+                        <td class="px-6 py-4">${holding.shares}</td>
+                        <td class="px-6 py-4">$${holding.avg_price.toFixed(2)}</td>
+                        <td class="px-6 py-4">$${holding.current_price.toFixed(2)}</td>
+                        <td class="px-6 py-4 ${returnClass} font-medium">${returnPercent}%</td>
+                        <td class="px-6 py-4">$${totalValue}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9839906b4199de40',t:'MTc1ODYyNTQ5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
